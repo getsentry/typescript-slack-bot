@@ -1,0 +1,5 @@
+### Deploying
+
+```
+yarn deploy
+```

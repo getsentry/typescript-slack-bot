@@ -1,0 +1,31 @@
+{
+  "name": "sentry-typescript-slack-bot",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Slackbot for sentry to update with typescript conversion progress",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "deploy": "gcloud functions deploy events --runtime nodejs10 --trigger-http",
+    "start": "DEBUG=slash-command-template node src/index.js"
+  },
+  "authors": [
+    "Billy Vong <billy@sentry.io>"
+  ],
+  "engines": {
+    "node": ">=10.0.0"
+  },
+  "dependencies": {
+    "@octokit/rest": "^16.35.1",
+    "@slack/events-api": "^2.3.0",
+    "axios": "^0.16.0"
+  },
+  "devDependencies": {
+    "@google-cloud/nodejs-repo-tools": "^3.3.0",
+    "eslint": "^6.8.0",
+    "prettier": "^1.19.1"
+  },
+  "cloud-repo-tools": {
+    "requiresKeyFile": true,
+    "requiresProjectId": true
+  }
+}
