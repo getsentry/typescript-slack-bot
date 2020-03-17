@@ -10,6 +10,10 @@ import {RequestError} from './error';
  * @param {string} req.rawBody Raw body of webhook request to check signature against.
  */
 const verifyWebhook = req => {
+  if (!process.env.SLACK_SECRET) {
+    throw new RequestError('Missing `SLACK_SECRET`', 400);
+  }
+
   const signature = {
     signingSecret: process.env.SLACK_SECRET,
     requestSignature: req.headers['x-slack-signature'],
