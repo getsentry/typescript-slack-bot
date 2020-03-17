@@ -1,5 +1,6 @@
-const config = require('../config.json');
-const {verifyRequestSignature} = require('@slack/events-api');
+import {verifyRequestSignature} from '@slack/events-api';
+
+import {RequestError} from './error';
 
 /**
  * Verify that the webhook request came from Slack.
@@ -10,17 +11,16 @@ const {verifyRequestSignature} = require('@slack/events-api');
  */
 const verifyWebhook = req => {
   const signature = {
-    signingSecret: config.SLACK_SECRET,
+    signingSecret: process.env.SLACK_SECRET,
     requestSignature: req.headers['x-slack-signature'],
     requestTimestamp: req.headers['x-slack-request-timestamp'],
     body: req.rawBody,
   };
 
   if (!verifyRequestSignature(signature)) {
-    const error = new Error('Invalid credentials');
-    error.code = 401;
+    const error = new RequestError('Invalid credentials', 401);
     throw error;
   }
 };
 
-module.exports = verifyWebhook;
+export default verifyWebhook;

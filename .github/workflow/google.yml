@@ -1,0 +1,54 @@
+# This workflow will deploy to Google Cloud Functions
+#
+# To configure this workflow, set up the following secrets in your workspace
+#
+#  * `SLACK_SECRET` - Slack secret
+#  * `SLACK_ACCESS_TOKEN` - Slack Bot User Access Token
+#  * `GOOGLE_SERVICE_ACCOUNT_EMAIL` - Google service account email
+#  * `GOOGLE_APPLICATION_CREDENTIALS` - Google service account private key
+
+name: Deploy
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build-deploy:
+    name: google
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Setup node
+      uses: actions/setup-node@v1
+
+    - name: yarn install
+      run: yarn install --frozen-lockfile
+
+    - name: test
+      run: yarn test
+
+    # Build ts
+    - name: Build
+      run: |
+        yarn build
+
+    # Setup gcloud CLI
+    - name: Setup gcloud CLI
+      uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
+      with:
+        version: '275.0.0'
+        service_account_email: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_EMAIL }}
+        service_account_key: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS}}
+
+    # Deploy to Google Cloud Functions
+    - name: Deploy
+      env:
+        SLACK_SECRET: ${{ secrets.SLACK_SECRET }}
+        SLACK_ACCESS_TOKEN: ${{ secrets.SLACK_ACCESS_TOKEN }}
+      run: |
+        bin/deploy.sh

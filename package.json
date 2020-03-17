@@ -3,10 +3,17 @@
   "private": true,
   "version": "1.0.0",
   "description": "Slackbot for sentry to update with typescript conversion progress",
+  "main": "lib/index",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "deploy": "gcloud functions deploy events --runtime nodejs10 --trigger-http",
-    "start": "DEBUG=slash-command-template node src/index.js"
+    "build": "tsc -p tsconfig.json",
+    "deploy": "yarn build && (yarn deploy:events & yarn deploy:stats)",
+    "deploy:events": "gcloud functions deploy events --allow-unauthenticated --project=sercy-2de63 --runtime nodejs10 --trigger-http --memory=128MB",
+    "deploy:stats": "gcloud functions deploy stats --allow-unauthenticated --project=sercy-2de63 --runtime nodejs10 --trigger-http --memory=128MB",
+    "dev": "yarn build --watch & nodemon --exec \"yarn start\"",
+    "start": "DEBUG=slash-command-template node src/index.js",
+    "lint": "yarn eslint **/*.ts --fix",
+    "test": "yarn eslint **/*.ts",
+    "test:watch": "yarn jest --watch --notify --notifyMode=change --coverage"
   },
   "authors": [
     "Billy Vong <billy@sentry.io>"
@@ -21,8 +28,14 @@
   },
   "devDependencies": {
     "@google-cloud/nodejs-repo-tools": "^3.3.0",
+    "@types/express": "^4.17.3",
+    "@typescript-eslint/eslint-plugin": "^2.24.0",
+    "@typescript-eslint/parser": "^2.24.0",
     "eslint": "^6.8.0",
-    "prettier": "^1.19.1"
+    "eslint-config-prettier": "^6.10.0",
+    "eslint-plugin-prettier": "^3.1.2",
+    "prettier": "^1.19.1",
+    "typescript": "^3.8.3"
   },
   "cloud-repo-tools": {
     "requiresKeyFile": true,
