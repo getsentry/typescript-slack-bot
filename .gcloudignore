@@ -12,6 +12,27 @@
 # below:
 .git
 .gitignore
+src
+test
+app.yml
+flowchart.png
+jest.config.js
+tsconfig.json
+CODE_OF_CONDUCT.md
+LICENSE
+CONTRIBUTING.md
+README.MD
+.prettierrc
+.npmrc
+.eslintrc.js
+.env.example
 
 node_modules
-#!include:.gitignore
+npm-debug.log
+*.pem
+!mock-cert.pem
+package-lock.json
+coverage
+.eslintcache
+.DS_Store
+*.d.ts
