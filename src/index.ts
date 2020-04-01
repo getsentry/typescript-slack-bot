@@ -103,7 +103,7 @@ exports.events = async (req: express.Request, res: express.Response) => {
 exports.stats = async (req: express.Request, res: express.Response) => {
   try {
     const data = await getProgress();
-    res.send(JSON.stringify(data));
+    res.json(data);
   } catch (err) {
     console.error(err);
     res.status(400).send(err);
