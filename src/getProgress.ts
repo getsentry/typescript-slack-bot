@@ -4,14 +4,29 @@ import {RequestError} from './error';
 
 const octokit = new Octokit();
 
-export default async function getProgress() {
+export default async function getProgress(date?: string) {
   const owner = 'getsentry';
   const repo = 'sentry';
+  let commitSha: string | undefined;
+
+  if (date) {
+    const commits = await octokit.repos.listCommits({
+      owner,
+      repo,
+      until: date,
+      per_page: 1,
+    });
+
+    if (commits.data.length) {
+      commitSha = commits.data[0].sha;
+    }
+  }
 
   const contents = await octokit.repos.getContents({
     owner,
     repo,
     path: 'src/sentry/static/sentry',
+    ref: commitSha,
   });
 
   if (!Array.isArray(contents.data)) {
