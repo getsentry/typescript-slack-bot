@@ -7,7 +7,11 @@ const octokit = new Octokit();
 export default async function getProgress(date?: string) {
   const owner = 'getsentry';
   const repo = 'sentry';
-  let commitSha: string | undefined;
+  const getContentsParams: {owner: string; repo: string; path: string; ref?: string} = {
+    owner,
+    repo,
+    path: 'src/sentry/static/sentry',
+  };
 
   if (date) {
     const commits = await octokit.repos.listCommits({
@@ -18,16 +22,11 @@ export default async function getProgress(date?: string) {
     });
 
     if (commits.data.length) {
-      commitSha = commits.data[0].sha;
+      getContentsParams.ref = commits.data[0].sha;
     }
   }
 
-  const contents = await octokit.repos.getContents({
-    owner,
-    repo,
-    path: 'src/sentry/static/sentry',
-    ref: commitSha,
-  });
+  const contents = await octokit.repos.getContents(getContentsParams);
 
   if (!Array.isArray(contents.data)) {
     throw new RequestError('Invalid directory', 400);
