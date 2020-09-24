@@ -1,6 +1,7 @@
 #!/bin/sh
 
 args="
+  --account=${GOOGLE_SERVICE_ACCOUNT_EMAIL}
   --allow-unauthenticated \
   --project=sercy-2de63 \
   --runtime=nodejs10 \

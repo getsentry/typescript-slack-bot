@@ -48,6 +48,7 @@ jobs:
     # Deploy to Google Cloud Functions
     - name: Deploy
       env:
+        GOOGLE_SERVICE_ACCOUNT_EMAIL: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_EMAIL }}
         SLACK_SECRET: ${{ secrets.SLACK_SECRET }}
         SLACK_ACCESS_TOKEN: ${{ secrets.SLACK_ACCESS_TOKEN }}
       run: |
