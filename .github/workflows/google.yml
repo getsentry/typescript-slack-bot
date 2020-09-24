@@ -45,6 +45,10 @@ jobs:
         service_account_key: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
         export_default_credentials: true
 
+    - run: ls
+
+    - run: ls lib
+
     # Deploy to Google Cloud Functions
     - name: Deploy
       env:
