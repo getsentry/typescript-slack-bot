@@ -4,6 +4,11 @@ import {RequestError} from './error';
 
 const octokit = new Octokit();
 
+/**
+ * Paths that we do not intend to convert to ts
+ */
+const IGNORED_PATHS = [/views\/events.*/];
+
 export default async function getProgress(date?: string) {
   const owner = 'getsentry';
   const repo = 'sentry';
@@ -52,7 +57,7 @@ export default async function getProgress(date?: string) {
     if (/\.tsx?$/.test(obj.path)) {
       tsxFiles.push(obj.path);
     }
-    if (/\.jsx?$/.test(obj.path)) {
+    if (/\.jsx?$/.test(obj.path) && !IGNORED_PATHS.some(r => r.test(obj.path))) {
       jsxFiles.push(obj.path);
     }
   }
