@@ -9,12 +9,13 @@ const octokit = new Octokit();
  */
 const IGNORED_PATHS = [/views\/events.*/, /views\/dashboards.*/];
 
-export default async function getProgress(repo: string, basePath: string, date?: string) {
+export default async function getProgress(date?: string) {
   const owner = 'getsentry';
+  const repo = 'sentry';
   const getContentsParams: {owner: string; repo: string; path: string; ref?: string} = {
     owner,
     repo,
-    path: basePath,
+    path: 'src/sentry/static/sentry',
   };
 
   if (date) {
