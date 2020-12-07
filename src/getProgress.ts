@@ -7,7 +7,7 @@ const octokit = new Octokit();
 /**
  * Paths that we do not intend to convert to ts
  */
-const IGNORED_PATHS = [/views\/events.*/];
+const IGNORED_PATHS = [/views\/events.*/, /views\/dashboards.*/];
 
 export default async function getProgress(date?: string) {
   const owner = 'getsentry';
