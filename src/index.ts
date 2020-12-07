@@ -107,7 +107,7 @@ exports.events = async (req: express.Request, res: express.Response) => {
 exports.stats = async (req: express.Request, res: express.Response) => {
   try {
     console.log(req.query);
-    const data = await getProgress(req.query.date);
+    const data = await getProgress('sentry', 'src/sentry/static/sentry', req.query.date);
     res.json(data);
   } catch (err) {
     console.error(err);
