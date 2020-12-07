@@ -41,7 +41,7 @@ exports.events = async (req: express.Request, res: express.Response) => {
         res.status(200).send('OK');
 
         try {
-          const [message, progressResp] = await Promise.all([
+          const [message, sentryProgress, getsentryProgress] = await Promise.all([
             axios.post(
               'https://slack.com/api/chat.postMessage',
               qs.stringify({
@@ -62,10 +62,17 @@ exports.events = async (req: express.Request, res: express.Response) => {
                 ]),
               })
             ),
-            getProgress(),
+            getProgress('sentry', 'src/sentry/static/sentry'),
+            getProgress('getsentry', 'static/getsentry/gsApp'),
           ]);
 
-          const {progress, remainingFiles} = progressResp;
+          const progress = (sentryProgress.progress + getsentryProgress.progress) / 2;
+          const remainingFiles =
+            sentryProgress.remainingFiles + getsentryProgress.remainingFiles;
+
+          const text = `TypeScript progress: *${progress}%* completed, *${remainingFiles}* files remaining\n
+ - *sentry:* ${sentryProgress.remainingFiles} files remain (${sentryProgress.progress}%)
+ - *getsentry:* ${getsentryProgress.remainingFiles} files remain (${getsentryProgress.progress}%)`;
 
           await axios.post(
             'https://slack.com/api/chat.update',
@@ -77,10 +84,7 @@ exports.events = async (req: express.Request, res: express.Response) => {
               blocks: JSON.stringify([
                 {
                   type: 'section',
-                  text: {
-                    type: 'mrkdwn',
-                    text: `TypeScript progress: *${progress}%* completed, *${remainingFiles}* files remaining`,
-                  },
+                  text: {type: 'mrkdwn', text},
                 },
               ]),
             })
@@ -103,7 +107,7 @@ exports.events = async (req: express.Request, res: express.Response) => {
 exports.stats = async (req: express.Request, res: express.Response) => {
   try {
     console.log(req.query);
-    const data = await getProgress(req.query.date);
+    const data = await getProgress('sentry', 'src/sentry/static/sentry', req.query.date);
     res.json(data);
   } catch (err) {
     console.error(err);
